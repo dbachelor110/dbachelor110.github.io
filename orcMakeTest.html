@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>簡單的單頁式網站</title>
+	<style>
+	/* 增加樣式 */
+	#a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100px;
+		font-size: 30px;
+		font-weight: bold;
+	}
+	#b {
+		margin-top: 20px;
+	}
+	#c {
+		margin-top: 20px;
+		display: flex;
+		justify-content: space-between;
+	}
+	#d {
+		margin-top: 20px;
+		font-size: 24px;
+		font-weight: bold;
+		text-align: center;
+	}
+	</style>
+</head>
+<body>
+	<div id="a">
+        <canvas id="canvas" width="300" height="100"></canvas>
+		<!-- 在這裡顯示圖形驗證碼 -->
+	</div>
+	<div id="b">
+		<input type="text" placeholder="輸入驗證文字">
+	</div>
+	<div id="c">
+		<button id="buttonA">送出答案</button>
+		<button id="buttonB">重新產生驗證碼</button>
+	</div>
+	<div id="d">
+		<!-- 顯示答案與驗證碼是否相符 -->
+	</div>
+	<script>
+	// 獲取元素
+	const a = document.getElementById('a');
+	const b = document.getElementById('b');
+	const c = document.getElementById('c');
+	const d = document.getElementById('d');
+
+	// 生成驗證碼
+	function generateCode() {
+		const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		let code = '';
+		for (let i = 0; i < 6; i++) {
+			code += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+		return code;
+	}
+
+	// 顯示驗證碼
+    function showCode() {
+        const code = generateCode();
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        //列出要顯示的字型
+        let font=["Pathway Extreme","Arial","Ysabeau","Roboto Mono"];
+		//製造隨機r,g,b
+        let rgb = [];
+        for (let i =0;i<3;i++){
+            rgb.push(Math.floor(Math.random()*100)+156);
+        }
+		//以rgb為基礎製作rgbReverse
+        let rgbReverse = rgb.map(val => 150-val+262);
+		//設定基礎rgbText
+        let rgbText = [100,100,100];
+
+        // 製作一個二成二的網格
+		Math.ceil(Math.random()*2)*10+10
+        const patternSize = Math.ceil(Math.random()*3)*10+10;
+        const patternCanvas = document.createElement("canvas");
+        patternCanvas.width = patternSize * 2;
+        patternCanvas.height = patternSize * 2;
+        const patternCtx = patternCanvas.getContext("2d");
+        patternCtx.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+        patternCtx.fillRect(0, 0, patternCanvas.width, patternCanvas.height);
+        patternCtx.fillStyle = `rgb(${rgbReverse[0]},${rgbReverse[1]},${rgbReverse[2]})`;
+        patternCtx.fillRect(0, 0, patternSize, patternSize);
+        patternCtx.fillRect(patternSize, patternSize, patternSize, patternSize);
+
+
+        // Use the pattern as the background
+        const pattern = ctx.createPattern(patternCanvas, "repeat");
+        ctx.fillStyle = pattern;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+   
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+
+        for (let i = 0; i < code.length; i++) {
+            let rgbTextRandom = rgbText.map(val => val+(Math.random()*40-20));
+            let t = Math.floor(Math.random()*4);
+            let size = t*3+40;
+            ctx.font = `600 ${size}px ${font[t]}`;
+            ctx.save();
+            // Add some rotation and translation
+            const angle = Math.random() * 0.4 - 0.2;
+            const tx = Math.random() * 20 - 10;
+            const ty = Math.random() * 20 - 10;
+            ctx.translate(i * 40 + 40, canvas.height / 2);
+            ctx.rotate(angle);
+            ctx.translate(tx, ty);
+
+            // Add some distortion
+            const scale = Math.random() * 0.2 + 0.9;
+            ctx.transform(scale, 0, 0, 1, 0, 0);
+
+            // Draw the character
+            //ctx.fillStyle = "rgb(${rgbText[0]},${rgbText[1]},${rgbText[2]})";
+            ctx.fillStyle = `rgb(${rgbTextRandom[0]},${rgbTextRandom[1]},${rgbTextRandom[2]})`;
+            ctx.fillText(code.charAt(i), 0, 0);
+			
+
+            ctx.restore();
+        }
+		drowRowLine(ctx);
+		drowColumnLine(ctx);
+
+        // Export the canvas as an image and display it in the a element
+        const dataURL = canvas.toDataURL("image/png");
+        const img = document.createElement("img");
+        img.src = dataURL;
+        a.innerHTML = "";
+        a.appendChild(img);
+    }
+
+    
+
+    // function changeList(list,operationStr){//val代表list的子元素
+    //     let listNew = list.map(val => eval(operationStr));
+    // }
+
+	// 綁定buttonB的點擊事件，重新生成驗證碼
+	document.getElementById('buttonB').addEventListener('click', showCode);
+
+	// 綁定buttonA的點擊事件，驗證答案是否正確
+	document.getElementById('buttonA').addEventListener('click', function() {
+		const input = b.querySelector('input');
+		const code = a.innerHTML;
+		if (input.value === code) {
+			d.innerHTML = '答案正確！';
+			d.style.color = 'green';
+		} else {
+			d.innerHTML = '答案不正確！';
+			d.style.color = 'red';
+		}
+	});
+
+	function drowRowLine(ctx,lineColor="red"){
+		ctx.moveTo(0, Math.ceil(Math.random()*150));
+		ctx.lineTo(300, Math.ceil(Math.random()*150));
+		ctx.strokeStyle = lineColor;
+		ctx.stroke();
+	}
+	function drowColumnLine(ctx,lineColor="red"){
+		ctx.moveTo(Math.ceil(Math.random()*300), 0);
+		ctx.lineTo(Math.ceil(Math.random()*300), 150);
+		ctx.strokeStyle = lineColor;
+		ctx.stroke();
+	}
+	// 顯示初始驗證碼
+	showCode();
+	</script>
+</body>
+</html>

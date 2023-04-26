@@ -21,10 +21,15 @@
 		justify-content: space-between;
 	}
 	#d {
+		width: 600px;
 		margin-top: 20px;
 		font-size: 24px;
 		font-weight: bold;
 		text-align: center;
+	}
+	p {
+		text-align: left;
+
 	}
 	</style>
 </head>
@@ -49,6 +54,7 @@
 	const b = document.getElementById('b');
 	const c = document.getElementById('c');
 	const d = document.getElementById('d');
+	let glableCode = generateCode()
 
 	// 生成驗證碼
 	function generateCode() {
@@ -62,7 +68,7 @@
 
 	// 顯示驗證碼
     function showCode() {
-        const code = generateCode();
+        const code = glableCode;
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         //列出要顯示的字型
@@ -99,6 +105,9 @@
    
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
+		drowRowLine(ctx);
+		drowColumnLine(ctx);
+		//開始寫字
 
         for (let i = 0; i < code.length; i++) {
             let rgbTextRandom = rgbText.map(val => val+(Math.random()*40-20));
@@ -126,8 +135,7 @@
 
             ctx.restore();
         }
-		drowRowLine(ctx);
-		drowColumnLine(ctx);
+		
 
         // Export the canvas as an image and display it in the a element
         const dataURL = canvas.toDataURL("image/png");
@@ -149,12 +157,20 @@
 	// 綁定buttonA的點擊事件，驗證答案是否正確
 	document.getElementById('buttonA').addEventListener('click', function() {
 		const input = b.querySelector('input');
-		const code = a.innerHTML;
-		if (input.value === code) {
-			d.innerHTML = '答案正確！';
+		const code = glableCode;
+		if (input.value == code) {
+			d.innerHTML = '<h2>答案正確！</h2>';
+			d.innerHTML += '<p>答案是：' + input.value + '</p>';
 			d.style.color = 'green';
 		} else {
-			d.innerHTML = '答案不正確！';
+			d.innerHTML = '<h2>答案不正確！</h2>';
+			if (input.value==""){
+				d.innerHTML += '<p>輸入是：沒有輸入，可沃==</p>';
+			}
+			else{
+				d.innerHTML += '<p>輸入是：' + input.value + '</p>';
+			}
+			d.innerHTML += '<p>答案是：' + code + '</p>';
 			d.style.color = 'red';
 		}
 	});

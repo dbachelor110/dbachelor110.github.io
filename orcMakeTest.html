@@ -4,6 +4,10 @@
 	<title>簡單的單頁式網站</title>
 	<style>
 	/* 增加樣式 */
+	#墊高{
+		width: 50%;
+		height: 50px;
+	}
 	.shoWindow{
 		width: 50%;
 		/* display: flex; */
@@ -13,9 +17,10 @@
 
 	.one{
 		/* display: flex; */
+		width: 300px;
 		margin: 0 auto;
 		flex-wrap: wrap;
-		padding: 20px 0;
+		padding: 10px 0;
 	}
 	.two{
 		width: 50%;
@@ -41,7 +46,6 @@
 		justify-content: space-between;
 	}
 	#d {
-		width: 600px;
 		margin-top: 20px;
 		font-size: 24px;
 		font-weight: bold;
@@ -56,6 +60,7 @@
 </head>
 <body>
 	<div class="shoWindow one">
+		<div id="墊高"></div>
 		<div class="one" id="a">
 			<canvas id="canvas" width="300" height="100"></canvas>
 			<!-- 在這裡顯示圖形驗證碼 -->

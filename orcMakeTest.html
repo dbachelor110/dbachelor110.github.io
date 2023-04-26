@@ -4,11 +4,31 @@
 	<title>簡單的單頁式網站</title>
 	<style>
 	/* 增加樣式 */
+	.shoWindow{
+		width: 50%;
+		/* display: flex; */
+		flex-direction: column;
+		margin: 0 auto;
+	}
+
+	.one{
+		/* display: flex; */
+		margin: 0 auto;
+		flex-wrap: wrap;
+		padding: 20px 0;
+	}
+	.two{
+		width: 50%;
+		min-width: 300px;
+		/* display: flex; */
+		float: left;
+		padding: 20px 0;
+	}
 	#a {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: 100px;
+		height: 150px;
 		font-size: 30px;
 		font-weight: bold;
 	}
@@ -26,6 +46,7 @@
 		font-size: 24px;
 		font-weight: bold;
 		text-align: center;
+		margin: 0 auto;
 	}
 	p {
 		text-align: left;
@@ -34,20 +55,23 @@
 	</style>
 </head>
 <body>
-	<div id="a">
-        <canvas id="canvas" width="300" height="100"></canvas>
-		<!-- 在這裡顯示圖形驗證碼 -->
+	<div class="shoWindow one">
+		<div class="one" id="a">
+			<canvas id="canvas" width="300" height="100"></canvas>
+			<!-- 在這裡顯示圖形驗證碼 -->
+		</div>
+		<div class="one" id="b">
+			<input type="text" placeholder="輸入驗證文字">
+		</div>
+		<div class="one" id="c">
+			<button id="buttonA">送出答案</button>
+			<button id="buttonB">重新產生驗證碼</button>
+		</div>
+		<div class="one" id="d">
+			<!-- 顯示答案與驗證碼是否相符 -->
+		</div>
 	</div>
-	<div id="b">
-		<input type="text" placeholder="輸入驗證文字">
-	</div>
-	<div id="c">
-		<button id="buttonA">送出答案</button>
-		<button id="buttonB">重新產生驗證碼</button>
-	</div>
-	<div id="d">
-		<!-- 顯示答案與驗證碼是否相符 -->
-	</div>
+	
 	<script>
 	// 獲取元素
 	const a = document.getElementById('a');
@@ -58,7 +82,8 @@
 
 	// 生成驗證碼
 	function generateCode() {
-		const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		// const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnpqrtuy123456789';
 		let code = '';
 		for (let i = 0; i < 6; i++) {
 			code += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -73,7 +98,8 @@
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         //列出要顯示的字型
-        let font=["Pathway Extreme","Arial","Ysabeau","Roboto Mono"];
+        // let font=["Pathway Extreme","Arial","Ysabeau","Roboto Mono"];
+		let font=["Arial","Arial","Arial","Arial"];
 		//製造隨機r,g,b
         let rgb = [];
         for (let i =0;i<3;i++){

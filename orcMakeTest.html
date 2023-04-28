@@ -188,19 +188,21 @@
 
 	// 綁定buttonA的點擊事件，驗證答案是否正確
 	document.getElementById('buttonA').addEventListener('click', function() {
-		const input = b.querySelector('input');
-		const code = glableCode;
-		if (input.value == code) {
+		//若須改回辨識大小寫，將兩個.toUpperCase()刪除即可
+		const inputElement = b.querySelector('input');
+		const userInput =inputElement.value.toUpperCase();
+		const code = glableCode.toUpperCase();
+		if (userInput == code) {
 			d.innerHTML = '<h2>答案正確！</h2>';
-			d.innerHTML += '<p>答案是：' + input.value + '</p>';
+			d.innerHTML += '<p>答案是：' + inputElement.value + '</p>';
 			d.style.color = 'green';
 		} else {
 			d.innerHTML = '<h2>答案不正確！</h2>';
-			if (input.value==""){
+			if (userInput==""){
 				d.innerHTML += '<p>輸入是：沒有輸入，可沃==</p>';
 			}
 			else{
-				d.innerHTML += '<p>輸入是：' + input.value + '</p>';
+				d.innerHTML += '<p>輸入是：' + inputElement.value + '</p>';
 			}
 			d.innerHTML += '<p>答案是：' + code + '</p>';
 			d.style.color = 'red';

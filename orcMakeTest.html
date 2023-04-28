@@ -194,7 +194,7 @@
 		const code = glableCode.toUpperCase();
 		if (userInput == code) {
 			d.innerHTML = '<h2>答案正確！</h2>';
-			d.innerHTML += '<p>答案是：' + inputElement.value + '</p>';
+			d.innerHTML += '<p>答案是：' + code + '</p>';
 			d.style.color = 'green';
 		} else {
 			d.innerHTML = '<h2>答案不正確！</h2>';
@@ -202,7 +202,7 @@
 				d.innerHTML += '<p>輸入是：沒有輸入，可沃==</p>';
 			}
 			else{
-				d.innerHTML += '<p>輸入是：' + inputElement.value + '</p>';
+				d.innerHTML += '<p>輸入是：' + userInput + '</p>';
 			}
 			d.innerHTML += '<p>答案是：' + code + '</p>';
 			d.style.color = 'red';

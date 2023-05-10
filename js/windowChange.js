@@ -13,6 +13,7 @@ let startWindow = document.getElementById("startWindow");
 let gameWindow = document.getElementById("gameWindow");
 let table = document.querySelector("#table");
 let newGamer = {
+  id:"",
   name: "",
   time: "",
   score: 0,
@@ -72,7 +73,12 @@ function upData() {
       storage[newGamer.id] = [newGamer.name, newGamer.time, newGamer.score];
       pointList.pop();
       const upDataGamer = newGamer;
-      pointList.push(upDataGamer);
+      pointList.push({
+        id:newGamer.id,
+        name:newGamer.name,
+        time:newGamer.time,
+        score:newGamer.score
+      });
       pointList = pointList.sort(function (a, b) {
         return b.score - a.score;
       });
@@ -80,7 +86,12 @@ function upData() {
   } else {
     newGamer.id = Object.entries(storage).length + 1;
     storage[newGamer.id] = [newGamer.name, newGamer.time, newGamer.score];
-    pointList.push(newGamer);
+    pointList.push({
+        id:newGamer.id,
+        name:newGamer.name,
+        time:newGamer.time,
+        score:newGamer.score
+      });
     pointList = pointList.sort(function (a, b) {
       return b.score - a.score;
     });

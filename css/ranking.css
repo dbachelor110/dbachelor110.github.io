@@ -1,0 +1,92 @@
+/* 設定背景顏色 */
+body {
+    background-color: #d1f1e5;
+}
+
+/* 設定標題顏色 */
+h1 {
+    color: #64A600;
+}
+
+/* 設定 container 的樣式 */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* 設定 table 的樣式 */
+.container table {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #64A600;
+    width: 80%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+/* 設定表格樣式 */
+table {
+    border-collapse: collapse;
+}
+
+/* 設定表頭背景顏色 */
+thead {
+    background-color: #f2f2f2;
+}
+
+/* 設定表頭樣式 */
+th {
+    text-align: left;
+    padding: 12px;
+    font-weight: bold;
+}
+
+/* 設定偶數列背景顏色 */
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* 設定表格內容樣式 */
+td {
+    text-align: left;
+    padding: 12px;
+}
+
+/* 設定按鈕樣式 */
+.button {
+    width: 200px;
+    height: 50px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    background-color: #2ecc71;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+/* 設定滑鼠移到按鈕上時的背景顏色 */
+.button:hover {
+    background-color: #27ae60;
+}
+
+/* 設定按鈕群組的樣式 */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}

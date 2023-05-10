@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>遊戲主選單</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="./css/style.css" />
+  <link rel="stylesheet" type="text/css" href="./css/startWindow.css" />
+  <meta charset="utf-8" />
+</head>
+
+<body>
+  <div id="startWindow" class="container">
+    <!-- <h1>歡迎來到遊戲選單！</h1> -->
+    <form>
+      <h3><label for="name">請輸入您的名稱：</label></h3>
+      <input type="text" id="name" name="name" /><br>
+      <button type="button" id="start">進入遊戲</button><br>
+      <button type="button" onclick="window.location.href='./snakeGame.html'">返回</button><br>
+    </form>
+    <table id="history">
+      <thead>
+        <tr>
+          <th>玩家名稱</th>
+          <th>時間</th>
+          <th>得分</th>
+          <th>排名</th>
+        </tr>
+      </thead>
+      <tbody id="scoreboard"></tbody>
+    </table>
+  </div>
+  <div id="gameWindow">
+    <main></main>
+  </div>
+</body>
+<main></main>
+<script src="./js/windowChange.js"></script>
+<script src="./js/startWindow.js"></script>
+<script src="./js/sketch.js"></script>
+
+</html>

@@ -1,0 +1,75 @@
+/* 設定背景顏色 */
+body {
+    background-color: #d1f1e5;
+}
+
+/* 設定按鈕樣式 */
+.button {
+    width: 200px;
+    height: 50px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    background-color: #2ecc71;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+/*滑鼠移入按鈕的變化*/
+.button:hover {
+    background-color: #27ae60;
+}
+
+/* 設定按鈕群組樣式 */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* 設定標題樣式 */
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 3em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 設定Snake的位置 */
+.snake {
+    transform: translateY(-50%);
+}
+
+/* 設定Game的位置 */
+.game {
+    transform: translateY(50%);
+}
+
+/* 設定容器樣式 */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* 設定高度為整個畫面 */
+    max-width: 800px;
+    /* 設定最大寬度 */
+    margin: 0 auto;
+    /* 水平置中 */
+}

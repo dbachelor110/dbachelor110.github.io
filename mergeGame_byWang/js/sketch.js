@@ -3,7 +3,7 @@ let snakePointList = [
   [0, 0],
   [-1, 0],
 ];
-let food = [0, 0];
+let food = [[0,0],[0,0],[0,0]];
 let dire = "ArrowRight";
 let startTime = 0;
 let goTime = 0;
@@ -188,16 +188,16 @@ function gameOver() {
       text("Get Point: " + 分數, (width * 3) / 25, (width * 7) / 10);
     }
     if (start == 1 && timeCount("gameOver", 60)) {
-      let gameMinute = int((frameCount - waiTimeList.gameStart) / 3600);
-      let gameSecond = int((frameCount - waiTimeList.gameStart) / 60);
-      if (gameMinute < 10) {
-        gameMinute = "0" + gameMinute;
+      let gameMinute = int((frameCount-waiTimeList.gameStart)/3600);
+      let gameSecond = int((frameCount-waiTimeList.gameStart)/60);
+      if(gameMinute<10){
+        gameMinute="0"+gameMinute;
       }
-      if (gameSecond < 10) {
-        gameSecond = "0" + gameSecond;
+      if(gameSecond<10){
+        gameSecond="0"+gameSecond;
       }
-      newGamer[`time`] = gameMinute + ":" + gameSecond;
-      newGamer[`score`] = 分數;
+      newGamer[`time`]=gameMinute+":"+gameSecond;
+      newGamer[`score`]=分數;
       upData();
       goToStartWindow();
       showHistoryList();
@@ -226,36 +226,38 @@ function dieRule() {
   }
 }
 function makefood() {
-  food[0] = int(random(-10, 9));
-  food[1] = int(random(-10, 9));
+  food[0]=([int(random(-10, 9)),int(random(-10, 9))]);
   let isFoodInSnake = -1;
   let forFlag = 0;
   while (isFoodInSnake != 0) {
     forFlag = 0;
     for (let i of snakePointList) {
-      if (i[0] == food[0] && i[1] == food[1]) {
+      if (i[0] == food[0][0] && i[1] == food[0][1]) {
         forFlag = 1;
         break;
       }
     }
     if (forFlag == 1) {
-      food[0] = int(random(-10, 9));
-      food[1] = int(random(-10, 9));
+      food[0][0] = int(random(-10, 9));
+      food[0][1] = int(random(-10, 9));
     } else {
       isFoodInSnake = 0;
     }
   }
 }
+function makeShinyfood(){
+  
+}
 function showFood() {
-  let foodX = width / 2 + food[0] * 2 * r;
-  let foodY = width / 2 + food[1] * 2 * r;
+  let foodX = width / 2 + food[0][0] * 2 * r;
+  let foodY = width / 2 + food[0][1] * 2 * r;
   fill(240);
-  rect(width / 2 + food[0] * 2 * r, width / 2 + food[1] * 2 * r, 2 * r, 2 * r);
+  rect(width / 2 + food[0][0] * 2 * r, width / 2 + food[0][1] * 2 * r, 2 * r, 2 * r);
 
   rect(foodX + r / 5, foodY + r / 5, 2 * r - (r * 2) / 5, 2 * r - (r * 2) / 5);
 }
 function eatFoodOrNot() {
-  if (snakePointList[0][0] == food[0] && snakePointList[0][1] == food[1]) {
+  if (snakePointList[0][0] == food[0][0] && snakePointList[0][1] == food[0][1]) {
     getPoint();
   }
 }
@@ -263,8 +265,8 @@ function testText() {
   textSize(12);
   text("snakeX = " + snakePointList[0][0], 20, 20);
   text("snakeY = " + snakePointList[0][1], 20, 40);
-  text("FoodX = " + food[0], 20, 60);
-  text("FoidY = " + food[1], 20, 80);
+  text("FoodX = " + food[0][0], 20, 60);
+  text("FoidY = " + food[0][1], 20, 80);
   text("dire = " + dire, 20, 100);
   text("Time = " + 時間, 20, 120);
 }

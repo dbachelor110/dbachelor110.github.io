@@ -71,7 +71,8 @@ function upData() {
       newGamer.id = pointList[pointList.length - 1].id;
       storage[newGamer.id] = [newGamer.name, newGamer.time, newGamer.score];
       pointList.pop();
-      pointList.push(newGamer);
+      const upDataGamer = newGamer;
+      pointList.push(upDataGamer);
       pointList = pointList.sort(function (a, b) {
         return b.score - a.score;
       });

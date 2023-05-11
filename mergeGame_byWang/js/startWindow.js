@@ -6,6 +6,7 @@
 
 const scoreboard = document.getElementById("scoreboard");
 const startBtn = document.getElementById("start");
+const quitBtn = document.getElementById("quit");
 
 
 
@@ -104,4 +105,9 @@ function showHistoryList() {
   // 將遊戲資料渲染到排行榜中
   renderLeaderboard(leaderboard);
 }
+function close() {
+  window.opener = null;
+  window.close();
+}
 startBtn.addEventListener("click", getInGame);
+quitBtn.addEventListener("click", close);

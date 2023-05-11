@@ -58,6 +58,8 @@ function getInGame() {
   }
   setStyleDisplay(startWindow, 0);
   setStyleDisplay(gameWindow, 1);
+  resetGame();
+  document.body.style.zoom = "100%";
   gameOn = 1;
 }
 

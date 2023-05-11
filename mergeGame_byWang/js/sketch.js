@@ -277,8 +277,8 @@ function mousePressed() {
   if (gameOn != 0) {
     start = 1;
     timeLoop("gameStart", 1);
-    let xValue = mouseX - width / 2 - snakePointList[0][0] * 2 * r + r;
-    let yValue = mouseY - width / 2 - snakePointList[0][1] * 2 * r + r;
+    let xValue = mouseX  - snakePointList[0][0] * 2 * r + r;
+    let yValue = mouseY - snakePointList[0][1] * 2 * r + r;
     if (dire == "ArrowUp" || dire == "ArrowDown") {
       if (xValue > 0) {
         dire = "ArrowRight";

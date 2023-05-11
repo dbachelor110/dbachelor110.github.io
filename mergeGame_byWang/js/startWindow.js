@@ -105,9 +105,13 @@ function showHistoryList() {
   // 將遊戲資料渲染到排行榜中
   renderLeaderboard(leaderboard);
 }
+function preclose(){
+  alert("你真的要離開了嗎?\n我們還有好多事情沒有一起做呢...");
+  return close();
+}
 function close() {
-  window.opener = null;
-  window.close();
+  alert("由於瀏覽器的安全限制及情感上的原因，\n我真的...做不到，請自己關閉視窗");
+  return;
 }
 startBtn.addEventListener("click", getInGame);
-quitBtn.addEventListener("click", close);
+quitBtn.addEventListener("click", preclose);

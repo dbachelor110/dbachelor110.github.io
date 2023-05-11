@@ -1,6 +1,7 @@
 /* 設定背景顏色 */
 body {
     background-color: #d1f1e5;
+    height: 100vh;
 }
 
 /* 設定按鈕樣式 */
@@ -54,7 +55,7 @@ body {
 .snake {
     transform: translateY(-50%);
 }
-
+    
 /* 設定Game的位置 */
 .game {
     transform: translateY(50%);
@@ -75,4 +76,9 @@ body {
 }
 .p5Canvas{
     margin: 0 auto;
+}
+main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

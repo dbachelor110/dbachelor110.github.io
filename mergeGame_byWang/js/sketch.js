@@ -32,12 +32,12 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background("#CBDAD5");
   web();
   snake();
   gameOver();
   if (gameOn == 1) {
-    testText();
+    // testText();
 
     if (start == 1) {
       showFood();
@@ -117,8 +117,8 @@ function snake() {
     }
   }
   else if (zone == 0) {
-    RGB["snake"] = [100, 100, 100];
-    snakeChange = [0, 0, 0];
+    RGB["snake"] = [21, 164, 111];
+    snakeChange = [2, 2, 2];
   }
   let countNumber = 0;
   for (let i of snakePointList) {

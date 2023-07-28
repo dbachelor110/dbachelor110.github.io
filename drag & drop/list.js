@@ -1,5 +1,5 @@
 class drag{
-    // e.3
+    // e.3jijijijijijij
 
     static log = (text = ``)=>{
         console.log(`Drag ${text}`);

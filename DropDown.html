@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- 我讀取所有 tagName = `select` 且具有屬性 multiple 的元素，根據讀取結果，使用 createElement ，在原生 select 元素之前插入自定義的介面。
+     在這個題目中，我將維持原生 html 結構、保持資料一致、可更換設計視為三個需要實現的需求，並以 function 作為主要的單元來進行實作。
+     若在生產環境中，當確認功能沒問題，我會再進行一次以 class 為主要單元的重構，以利大型專案的元件管理。 -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .MutipleSelect.select.item{
+            border-radius: 0.125rem;
+            margin: 0.5rem;
+            outline: 0.1rem solid black;
+            background-color: white;
+        }
+        .MutipleSelect.select.item .showArea.item{
+            margin: 0.25rem;
+        }
+        .MutipleSelect.select.item .button{
+            border: unset;
+            background: none;
+        }
+        .MutipleSelect.select.item .button.showArea{
+            margin: 0.225rem;
+        }
+        .MutipleSelect.select.item .optionArea.item{
+            margin-top: 2.25rem;
+            width: inherit;
+            background-color: white;
+            box-shadow: 0.125rem 0.125rem 0.125rem gray;
+        }
+        .MutipleSelect.select.item .optionArea.item .option{
+            margin: 0.5rem;
+        }
+        .MutipleSelect.select.item .showArea .selectedOption.item{
+            border-radius: 0.125rem;
+            padding: 0 0.225rem;
+            margin-right: 0.225rem;
+            background-color: skyblue;
+        }
+        .MutipleSelect.select.item .showArea .selectedOption .lable{
+            padding: 0.125rem;
+            /* padding: 0.125rem; */
+        }
+    </style>
+</head>
+
+<body>
+    <select name="select1" multiple>
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+    </select>
+    <select name="select2" multiple>
+        <option>Option 1</option>
+        <option>Option 2</option>
+        <option>Option 3</option>
+    </select>
+</body>
+<script>
+
+    const TAGSTR = `0123456789ABCDEF`;
+    let TagList = [];
+    
+    // 產生隨機 tag
+    function randomTag(long = new Number){
+        // 整數化
+        long = Math.floor(long);
+
+        // 宣告 tag
+        let tag;
+
+        // 迴圈產生
+        // 查找 TagList 避免產生重複 tag
+        do{
+            tag = ``;
+            for(let i = 0; i < long; i++){
+                let randomNumber = Math.floor(Math.random() * TAGSTR.length);
+                tag += TAGSTR[randomNumber];
+            }
+        }while(TagList.includes(tag))
+        
+        // 加入 TagList
+        TagList.push(tag);
+
+        // 輸出 tag
+        return tag;
+    }
+
+    //向上找到特定 class 並回傳第一個符合的 element
+    function findParent(element = new HTMLElement, className = new String) {
+        // 宣告暫存變數 parentElement
+        let parentElement = element.parentElement;
+
+        // loop 向上迭代祖輩
+        while (parentElement && parentElement.tagName !== 'html'){
+            // 如果符合，則回傳 parentElement
+            if (parentElement.classList.contains(className)){return parentElement;}
+
+            // 不符合，則繼續向上迭代祖輩
+            parentElement = parentElement.parentElement;
+        }
+    }
+
+    // 隱藏元素
+    function hideElement(element = new HTMLElement) {
+        element.style.display = `none`;
+        element.classList.add(`hide`);
+    }
+
+    // 顯示元素
+    function unHideElement(element = new HTMLElement) {
+        // 如果沒有 hide class ，則提前退出
+        if(element.classList.contains(`hide`) == false){return;}
+
+        // 執行邏輯
+        element.style.display = `block`;
+        element.classList.remove(`hide`);     
+    }
+
+    // 在 lable 上顯示一個 option
+    function addSelectionOnLable(option = new HTMLElement, showLable = new HTMLElement){
+        // 取得 connectTag
+        let connectTag = option.getAttribute(`connectTag`);
+
+        // 宣告新元素 newOptionShow
+        let newOptionShow = document.createElement(`div`);
+        // 設定屬性
+        newOptionShow.setAttribute(`class`, `selectedOption item`);
+        newOptionShow.setAttribute(`connectTag`, connectTag);
+        newOptionShow.setAttribute(`style`, `display: flex; flex-direction: row;`);
+
+        // 宣告新元素 optionLable
+        let optionLable = document.createElement(`lable`);
+        // 設定屬性
+        optionLable.setAttribute(`class`, `selectedOption lable`);
+        optionLable.textContent = option.textContent;
+
+        // 宣告新元素 optionRemoveButton
+        let optionRemoveButton = document.createElement(`button`);
+        // 設定屬性
+        optionRemoveButton.setAttribute(`class`, `selectedOption button remove`);
+        optionRemoveButton.textContent = `×`;
+
+        // 組合 newOptionShow
+        newOptionShow.appendChild(optionLable);
+        newOptionShow.appendChild(optionRemoveButton);
+
+        // 加入 showLable
+        showLable.appendChild(newOptionShow);
+    }
+
+    // 在 lable 上刪除一個 option
+    function removeSelectionOnLable(option = new HTMLElement, showLable = new HTMLElement){
+        // 取得 connectTag
+        let connectTag = option.getAttribute(`connectTag`);
+
+        // 取得對應 OptionShow 元素
+        let newOptionShow = showLable.querySelector(`.selectedOption.item[connectTag='${connectTag}']`);
+        
+        // 刪除 OptionShow
+        newOptionShow.remove();
+    }
+
+    // 提供 .remove.button 使用，可移除最近的 item parent
+    function removeItem(element = new HTMLElement){
+        // 如果沒有 remove class ，則提前退出
+        if(element.classList.contains(`remove`) == false || element.classList.contains(`button`) == false){return;}
+        
+        // 執行邏輯
+        let item = findParent(element, `item`);
+        item.remove();
+    }
+
+    // 提供 .showArea.button 使用，可變換圖標
+    function changeShowAreaButtonIcon(element = new HTMLElement){
+        console.log(`${findParent(element,`select`).getAttribute(`connectTag`)} in changeShowAreaButtonIcon`);
+        // 如果沒有 .showArea.button ，則提前退出
+        if(element.classList.contains(`button`) == false || element.classList.contains(`showArea`) == false){return;}
+        
+        // 執行邏輯
+        if(element.textContent == `▼`){
+            element.textContent = `▲`;
+        }else{
+            element.textContent = `▼`;
+        }
+    }
+
+    // 從 showLable 取消選取
+    function cancelSelected(element = new HTMLElement){
+        // 如果沒有 remove class ，則提前退出
+        if(element.classList.contains(`remove`) == false || element.classList.contains(`button`) == false){return;}
+
+        // 找到 showItem
+        let showItem = findParent(element, `item`);
+        let connectTag = showItem.getAttribute(`connectTag`);
+
+        // 找到 checkbox
+        let MutipleSelect = findParent(showItem, `select`);
+        let checkbox = MutipleSelect.querySelector(`input.checkbox[connectTag='${connectTag}']`);
+        // 取消選取
+        checkbox.checked = false;
+        // 同步選擇
+        SynchronizeMutipleSelectOptions(checkbox);
+    }
+
+    // 切換顯示或隱藏 optionArea
+    function ChangeOptionAreaHide(element = new HTMLElement){
+        // 提前退出
+        if(element.classList.contains(`showArea`)==false){
+            console.log(`${element.tagName} out`);
+            return;
+        }
+
+        // 執行邏輯
+        let MutipleSelect = findParent(element, `select`);
+        let optionArea = MutipleSelect.querySelector(`.optionArea`);
+        if(optionArea.classList.contains(`hide`)){
+            unHideElement(optionArea);
+        }else{
+            hideElement(optionArea);
+        }
+        // 改按鈕的圖標
+        changeShowAreaButtonIcon(MutipleSelect.querySelector(`.MutipleSelect.showArea .showArea.button`))
+    }
+
+    // 標記 select 與自定義的 MutipleSelect
+    function connectElements(ElementArry){
+
+        // 產生標記
+        let tag = randomTag(6);
+
+        // 添加標記
+        for(let ElementItem of ElementArry){
+            ElementItem.setAttribute(`connectTag`,tag);
+        }
+    }
+
+    // 連動 MutipleSelect 與真實元件的選項選擇
+    function SynchronizeMutipleSelectOptions(element = new Element){
+        // 提前退出
+        if(element.classList.contains(`checkbox`)==false){return;}
+
+        // 執行邏輯
+        let checkbox = element;
+        let MutipleSelect = findParent(checkbox, `select`);
+        let connectTag = MutipleSelect.getAttribute(`connectTag`);
+
+        let select = MutipleSelect.parentElement.querySelector(`select[connectTag='${connectTag}']`);
+        connectTag = checkbox.getAttribute(`connectTag`);
+
+        let option = select.querySelector(`option[connectTag='${connectTag}']`);
+        option.selected = checkbox.checked;
+
+        // 更新 showLable
+        let showLable = MutipleSelect.querySelector(`.showArea.lable`);
+        if(option.selected){
+            addSelectionOnLable(option,showLable);
+        }else{
+            removeSelectionOnLable(option,showLable);
+        }
+    }
+
+    function makeOneOptionToNewSelect(oneOption = new HTMLElement) {
+        // 宣告 NewOption
+        let oneNewOption = document.createElement(`div`);
+        // 設定屬性
+        oneNewOption.setAttribute(`class`, `MutipleSelect option item`);
+        oneNewOption.setAttribute(`style`, `display: flex; flex-direction: row;`);
+
+
+        // 宣告 checkbox
+        let checkbox = document.createElement(`input`);
+        // 設定屬性
+        checkbox.setAttribute(`class`, `checkbox`);
+        checkbox.setAttribute(`type`, `checkbox`);
+        checkbox.setAttribute(`name`, oneOption.textContent);
+        checkbox.setAttribute(`value`, oneOption.getAttribute(`value`));
+
+
+        // 宣告 lable
+        let lable = document.createElement(`div`);
+        // 設定屬性
+        lable.setAttribute(`class`, `lable`);
+        lable.textContent = oneOption.textContent;
+
+        // 將 checkbox 與 lable 加入 oneNewOption
+        oneNewOption.appendChild(checkbox);
+        oneNewOption.appendChild(lable);
+
+        // connect oneNewOption and oneOption
+        connectElements([oneNewOption, checkbox, lable, oneOption]);
+
+        // 回傳
+        return oneNewOption;
+    }
+    function makeNewMutipleSelect(oneSelect = new HTMLElement) {
+
+        // 宣告 NewMutipleSelect
+        let NewMutipleSelect = document.createElement(`div`);
+        // 設定屬性
+        NewMutipleSelect.setAttribute(`class`, `MutipleSelect select item`);
+        NewMutipleSelect.setAttribute(`style`, `display: flex; flex-direction: column;`);
+
+        // 宣告顯示區
+        let showSelected = document.createElement(`div`);
+        // 設定屬性
+        showSelected.setAttribute(`class`, `MutipleSelect showArea item`);
+        showSelected.setAttribute(`style`, `display: flex; flex-direction: row; justify-content: space-between; position: relative;`);
+
+        // 宣告 lable
+        let showSelectedLable = document.createElement(`div`);
+        // 設定屬性
+        showSelectedLable.setAttribute(`class`, `showArea lable`);
+        showSelectedLable.setAttribute(`style`, `display: flex; flex-direction: row;`);
+
+        // 宣告 button
+        let showSelectedButton = document.createElement(`button`);
+        // 設定屬性
+        showSelectedButton.setAttribute(`class`, `showArea button`);
+        showSelectedButton.textContent = `▼`;
+
+        // 組合顯示區
+        showSelected.appendChild(showSelectedLable);
+        showSelected.appendChild(showSelectedButton);
+
+        // 將顯示區加入 NewMutipleSelect
+        NewMutipleSelect.appendChild(showSelected);
+
+        // 宣告選項區
+        let OptionArea = document.createElement(`div`);
+        // 設定屬性
+        OptionArea.setAttribute(`class`, `MutipleSelect optionArea item`);
+        OptionArea.style.position = `absolute`;
+        OptionArea.style.zIndex = `1`;
+        // 隱藏
+        hideElement(OptionArea);
+
+        // 將選項區加入 NewMutipleSelect
+        NewMutipleSelect.appendChild(OptionArea);
+
+        let options = oneSelect.querySelectorAll(`option`);
+        for (let option of options) {
+            let oneNewOption = makeOneOptionToNewSelect(option);
+            OptionArea.appendChild(oneNewOption);
+        }
+
+        return NewMutipleSelect;
+    }
+    function addNewMutipleSelectListener(NewMutipleSelect= new HTMLElement) {
+        NewMutipleSelect.addEventListener(`click`,(e)=>{ChangeOptionAreaHide(e.target);cancelSelected(e.target);removeItem(e.target);});
+        NewMutipleSelect.addEventListener(`change`,(e)=>{SynchronizeMutipleSelectOptions(e.target);});
+    }
+    function configOneMutipleSelect(oneSelect= new HTMLElement) {
+        // 隱藏原始元素
+        hideElement(oneSelect);
+
+        // 製作自定義介面
+        // 新增 MutipleSelect
+        let NewMutipleSelect = makeNewMutipleSelect(oneSelect);
+
+        // 添加標記
+        connectElements([oneSelect, NewMutipleSelect]);
+
+        // 將 MutipleSelect 插入 oneSelect 前
+        oneSelect.parentElement.insertBefore(NewMutipleSelect, oneSelect);
+
+        // 加上監聽事件
+        addNewMutipleSelectListener(NewMutipleSelect);
+    }
+
+    // 將整個文件中的 select 修飾
+    function configMutipleSelect() {
+        let MutipleSelects = document.querySelectorAll(`select`);
+        for (let MutipleSelect of MutipleSelects) {
+            // 如果沒有 multiple ，跳過
+            if (MutipleSelect.hasAttribute(`multiple`) == false) { continue; }
+
+            // 將 MutipleSelect config
+            configOneMutipleSelect(MutipleSelect);
+        }
+    }
+    configMutipleSelect();
+</script>
+
+</html>

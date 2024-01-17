@@ -28,6 +28,10 @@
             margin: 0.25rem;
         }
         .MutipleSelect.select.item .button{
+            display: flex; /* ★ */
+            align-items: center; /* ★ */
+            width: 1rem;
+            height: 100%;
             border: unset;
             background: none;
         }
@@ -79,16 +83,13 @@
         </select>
         <input type="submit" value="Submit">
     </form> 
-    <div class="submit show"></div>
 </body>
 <script>
-    // 宣告 TAGADMIN 來儲存 TAGSTR & TagList
+    // 宣告 TAGADMIN 來管理 TAG
     function TAGADMIN(){}
     TAGADMIN.TAGSTR = `0123456789ABCDEF`;
     TAGADMIN.TagList = [];
-    
-    // 產生隨機 tag
-    function randomTag(long = new Number){
+    TAGADMIN.gatTag = (long = new Number)=>{
         // 整數化
         long = Math.floor(long);
 
@@ -110,11 +111,37 @@
 
         // 輸出 tag
         return tag;
-    }
+    };
 
+    // 宣告 LOGADMIN 來管理 LOG
+    function LOGADMIN(){}
+    LOGADMIN.SHOWFLAG=true;
+    LOGADMIN.log=(text)=>{if(LOGADMIN.SHOWFLAG){console.log(text);}}
+
+    // 宣告 HANDLEADMIN
+    function HANDLEADMIN(){}
+    HANDLEADMIN.synchronizeToggleMutipleSelectOptions = (e = new Event)=>{
+        if(e.target.classList.contains(`checkbox`)){
+            e.stopPropagation();
+            LOGADMIN.log(`${e.target.className} : get in HANDLE.SynchronizeMS`);
+            synchronizeToggleMutipleSelectOptions(e.target);}
+    };
+    HANDLEADMIN.cancelSelected = (e = new Event)=>{
+        if(e.target.classList.contains(`remove`)&&e.target.classList.contains(`button`)){
+            e.stopPropagation();
+            LOGADMIN.log(`${e.target.className} : get in HANDLE.cancelSelected`);
+            cancelSelected(e.target);}
+    };
+    HANDLEADMIN.changeOptionAreaHide = (e = new Event)=>{
+        if(e.target.classList.contains(`showArea`)){
+            e.stopPropagation();
+            LOGADMIN.log(`${e.target.className} : get in HANDLE.changeOAHide`);
+            changeOptionAreaHide(e.target);}
+    };
+    
     // 送出已選擇
-    function submitMultiple(event = new SubmitEvent) {
-        console.log(`in submit`);
+    function alertSubmit(event = new SubmitEvent) {
+        LOGADMIN.log(`in submit`);
 
         // 取得資料
         let formData = new FormData(event.target);
@@ -123,10 +150,10 @@
         // 宣告字串
         let outPutStr = ``;
         for (var dataPair of formData.entries()) {
-            outPutStr +=`${dataPair[0]} : ${dataPair[1]}
-`;
+            outPutStr +=`${dataPair[0]}=${dataPair[1]}&`;
         }
-        document.querySelector(`.submit.show`).innerHTML = outPutStr;
+        outPutStr = outPutStr.slice(0, -1);
+        alert(outPutStr);
     }
 
     //向上找到特定 class 並回傳第一個符合的 element
@@ -192,7 +219,7 @@
         optionLabel.textContent = option.textContent;
 
         // 宣告新元素 optionRemoveButton
-        let optionRemoveButton = document.createElement(`button`);
+        let optionRemoveButton = document.createElement(`div`);
         // 設定屬性
         optionRemoveButton.setAttribute(`class`, `selectedOption button remove`);
         optionRemoveButton.textContent = `×`;
@@ -229,7 +256,7 @@
 
     // 提供 .showArea.button 使用，可變換圖標
     function changeShowAreaButtonIcon(element = new HTMLElement){
-        console.log(`${findParent(element,`select`).getAttribute(`connectTag`)} in changeShowAreaButtonIcon`);
+        LOGADMIN.log(`${findParent(element,`select`).getAttribute(`connectTag`)} in changeShowAreaButtonIcon`);
         // 如果沒有 .showArea.button ，則提前退出
         if(element.classList.contains(`button`) == false || element.classList.contains(`showArea`) == false){return;}
         
@@ -253,17 +280,18 @@
         // 找到 checkbox
         let MutipleSelect = findParent(showItem, `select`);
         let checkbox = MutipleSelect.querySelector(`div.checkbox[connectTag='${connectTag}']`);
-        // 取消選取
-        checkbox.checked = false;
+
         // 同步選擇
-        SynchronizeMutipleSelectOptions(checkbox);
+        synchronizeToggleMutipleSelectOptions(checkbox);
+        removeItem(element);
     }
 
+
     // 切換顯示或隱藏 optionArea
-    function ChangeOptionAreaHide(element = new HTMLElement){
+    function changeOptionAreaHide(element = new HTMLElement){
         // 提前退出
         if(element.classList.contains(`showArea`)==false){
-            console.log(`${element.tagName} out`);
+            LOGADMIN.log(`${element.tagName} out`);
             return;
         }
 
@@ -283,7 +311,7 @@
     function connectElements(ElementArry){
 
         // 產生標記
-        let tag = randomTag(6);
+        let tag = TAGADMIN.gatTag(6);
 
         // 添加標記
         for(let ElementItem of ElementArry){
@@ -292,7 +320,7 @@
     }
 
     // 連動 MutipleSelect 與真實元件的選項選擇
-    function SynchronizeMutipleSelectOptions(element = new Element){
+    function synchronizeToggleMutipleSelectOptions(element = new Element){
         // 提前退出
         if(element.classList.contains(`checkbox`)==false){return;}
 
@@ -373,7 +401,7 @@
         showSelectedLabel.setAttribute(`style`, `display: flex; flex-direction: row;`);
 
         // 宣告 button
-        let showSelectedButton = document.createElement(`button`);
+        let showSelectedButton = document.createElement(`div`);
         // 設定屬性
         showSelectedButton.setAttribute(`class`, `showArea button`);
         showSelectedButton.textContent = `▼`;
@@ -406,8 +434,9 @@
         return NewMutipleSelect;
     }
     function addNewMutipleSelectListener(NewMutipleSelect= new HTMLElement) {
-        NewMutipleSelect.addEventListener(`click`,(e)=>{ChangeOptionAreaHide(e.target);cancelSelected(e.target);removeItem(e.target);});
-        NewMutipleSelect.addEventListener(`click`,(e)=>{SynchronizeMutipleSelectOptions(e.target);});
+        NewMutipleSelect.addEventListener(`click`,(e)=>{HANDLEADMIN.changeOptionAreaHide(e)});
+        NewMutipleSelect.addEventListener(`click`,(e)=>{HANDLEADMIN.synchronizeToggleMutipleSelectOptions(e)});
+        NewMutipleSelect.addEventListener(`click`,(e)=>{HANDLEADMIN.cancelSelected(e)});
     }
     function configOneMutipleSelect(oneSelect= new HTMLElement) {
         // 隱藏原始元素
@@ -443,7 +472,7 @@
     window.addEventListener("load", (e) => {
         configMutipleSelect();
         // 註冊 submit lisener
-        document.addEventListener(`submit`,(e)=>{submitMultiple(e);});
+        document.addEventListener(`submit`,(e)=>{alertSubmit(e);});
     });
 </script>
 

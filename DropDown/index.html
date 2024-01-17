@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./multipleSelect.css">
+</head>
+
+<body>
+    <form>
+        <select name="select1" multiple>
+            <option>Option 1</option>
+            <option>Option 2</option>
+            <option>Option 3</option>
+        </select>
+        <select name="select2" multiple>
+            <option>Option A</option>
+            <option>Option B</option>
+            <option>Option C</option>
+        </select>
+        <input type="submit" value="Submit">
+    </form> 
+</body>
+<script type="module" src="./multipleSelect.js"></script>
+<script type="module">
+    import {configMutipleSelect, alertSubmit} from './multipleSelect.js';
+
+    // 送出已選擇
+    function submitMultiple(event = new SubmitEvent) {
+        LOGADMIN.log(`in submit`);
+
+        // 取得資料
+        let formData = new FormData(event.target);
+
+        // 處理資料
+        // 宣告字串
+        let outPutStr = ``;
+        for (var dataPair of formData.entries()) {
+            outPutStr +=`${dataPair[0]}=${dataPair[1]}&`;
+        }
+        outPutStr = outPutStr.slice(0, -1);
+        alert(outPutStr);
+    }
+
+    // 在頁面載入以後修飾所有mutiple select ，以及註冊監聽事件
+    window.addEventListener("load", (e) => {
+        configMutipleSelect();
+        // 註冊 submit lisener
+        document.addEventListener(`submit`,(e)=>{alertSubmit(e);});
+    });
+</script>
+</html>

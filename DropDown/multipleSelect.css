@@ -1,0 +1,58 @@
+body{
+    background-color: cornsilk;
+}
+.submit.button{
+    border-radius: 0.125rem;
+    margin: 0.5rem;
+    outline: 0.1rem solid black;
+    border: 0;
+    background-color: white;
+}
+.MutipleSelect.select.item{
+    border-radius: 0.125rem;
+    margin: 0.5rem;
+    outline: 0.1rem solid black;
+    background-color: white;
+}
+.MutipleSelect.select.item .showArea.item{
+    margin: 0.25rem;
+}
+.MutipleSelect.select.item .button{
+    display: flex; /* ★ */
+    align-items: center; /* ★ */
+    width: 1rem;
+    height: 100%;
+    border: unset;
+    background: none;
+}
+.MutipleSelect.select.item .button.showArea{
+    margin: 0.225rem;
+}
+.MutipleSelect.select.item .optionArea.item{
+    margin-top: 2.25rem;
+    width: inherit;
+    background-color: white;
+    box-shadow: 0.125rem 0.125rem 0.125rem gray;
+}
+.MutipleSelect.select.item .optionArea.item .option{
+    margin: 0.5rem;
+}
+.MutipleSelect.select.item .checkbox{
+    width: 1rem;
+    height: 1rem;
+    margin: 0 0.5rem;
+    border-radius: 0.125rem;
+    outline: 0.1rem solid rgb(117, 117, 117);
+}
+.MutipleSelect.select.item .checkbox.checked{
+    background-color: lightblue;
+}
+.MutipleSelect.select.item .showArea .selectedOption.item{
+    border-radius: 0.125rem;
+    padding: 0 0.225rem;
+    margin-right: 0.225rem;
+    background-color: lightblue;
+}
+.MutipleSelect.select.item .showArea .selectedOption .label{
+    padding: 0.125rem;
+}

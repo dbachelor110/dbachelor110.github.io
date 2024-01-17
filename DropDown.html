@@ -43,6 +43,16 @@
         .MutipleSelect.select.item .optionArea.item .option{
             margin: 0.5rem;
         }
+        .MutipleSelect.select.item .checkbox{
+            width: 1rem;
+            height: 1rem;
+            margin: 0 0.5rem;
+            border-radius: 0.125rem;
+            outline: 0.1rem solid rgb(117, 117, 117);
+        }
+        .MutipleSelect.select.item .checkbox.checked{
+            background-color: lightblue;
+        }
         .MutipleSelect.select.item .showArea .selectedOption.item{
             border-radius: 0.125rem;
             padding: 0 0.225rem;
@@ -56,17 +66,19 @@
 </head>
 
 <body>
-    <select name="select1" multiple>
-        <option>Option 1</option>
-        <option>Option 2</option>
-        <option>Option 3</option>
-    </select>
-    <select name="select2" multiple>
-        <option>Option A</option>
-        <option>Option B</option>
-        <option>Option C</option>
-    </select>
-    <button type="button" class="submit button">Submit</button>
+    <form>
+        <select name="select1" multiple>
+            <option>Option 1</option>
+            <option>Option 2</option>
+            <option>Option 3</option>
+        </select>
+        <select name="select2" multiple>
+            <option>Option A</option>
+            <option>Option B</option>
+            <option>Option C</option>
+        </select>
+        <input type="submit" value="Submit">
+    </form> 
     <div class="submit show"></div>
 </body>
 <script>
@@ -101,23 +113,19 @@
     }
 
     // 送出已選擇
-    function submitMultiple() {
-        console.log(`in ubmitMultiple`);
-        let selects = document.querySelectorAll(`select`);
+    function submitMultiple(event = new SubmitEvent) {
+        console.log(`in submit`);
+
+        // 取得資料
+        let formData = new FormData(event.target);
+
+        // 處理資料
+        // 宣告字串
         let outPutStr = ``;
-        for (let select of selects) {
-            // 如果不是 multiple ，跳過這一輪
-            if (select.hasAttribute(`multiple`)==false){continue;}
-            let tempOut = ``;
-            tempOut += `${select.name} {<br>`;
-            let options = select.querySelectorAll(`option`);
-            for (let option of options){
-                if (option.selected) { tempOut += `    ${option.value},<br>`;}
-            }
-            tempOut += `}<br>`;
-            outPutStr += tempOut;
+        for (var dataPair of formData.entries()) {
+            outPutStr +=`${dataPair[0]} : ${dataPair[1]}
+`;
         }
-        outPutStr
         document.querySelector(`.submit.show`).innerHTML = outPutStr;
     }
 
@@ -150,6 +158,19 @@
         // 執行邏輯
         element.style.display = `block`;
         element.classList.remove(`hide`);     
+    }
+
+    // 改變選取狀態
+    function changeCheckStatus(element = new HTMLElement){
+        if (element.checked) {
+            element.checked = false;
+            //調整 class
+            if (element.classList.contains(`checked`)){element.classList.remove(`checked`);}
+        }else{
+            element.checked = true;
+            //調整 class
+            if (element.classList.contains(`checked`)==false){element.classList.add(`checked`);}
+        }
     }
 
     // 在 label 上顯示一個 option
@@ -231,7 +252,7 @@
 
         // 找到 checkbox
         let MutipleSelect = findParent(showItem, `select`);
-        let checkbox = MutipleSelect.querySelector(`input.checkbox[connectTag='${connectTag}']`);
+        let checkbox = MutipleSelect.querySelector(`div.checkbox[connectTag='${connectTag}']`);
         // 取消選取
         checkbox.checked = false;
         // 同步選擇
@@ -276,14 +297,17 @@
         if(element.classList.contains(`checkbox`)==false){return;}
 
         // 執行邏輯
+        // 讀取資訊
         let checkbox = element;
         let MutipleSelect = findParent(checkbox, `select`);
         let connectTag = MutipleSelect.getAttribute(`connectTag`);
-
         let select = MutipleSelect.parentElement.querySelector(`select[connectTag='${connectTag}']`);
         connectTag = checkbox.getAttribute(`connectTag`);
-
         let option = select.querySelector(`option[connectTag='${connectTag}']`);
+
+        // 修改選取狀態
+        changeCheckStatus(checkbox);
+
         option.selected = checkbox.checked;
 
         // 更新 showLabel
@@ -304,7 +328,7 @@
 
 
         // 宣告 checkbox
-        let checkbox = document.createElement(`input`);
+        let checkbox = document.createElement(`div`);
         // 設定屬性
         checkbox.setAttribute(`class`, `checkbox`);
         checkbox.setAttribute(`type`, `checkbox`);
@@ -383,7 +407,7 @@
     }
     function addNewMutipleSelectListener(NewMutipleSelect= new HTMLElement) {
         NewMutipleSelect.addEventListener(`click`,(e)=>{ChangeOptionAreaHide(e.target);cancelSelected(e.target);removeItem(e.target);});
-        NewMutipleSelect.addEventListener(`change`,(e)=>{SynchronizeMutipleSelectOptions(e.target);});
+        NewMutipleSelect.addEventListener(`click`,(e)=>{SynchronizeMutipleSelectOptions(e.target);});
     }
     function configOneMutipleSelect(oneSelect= new HTMLElement) {
         // 隱藏原始元素
@@ -419,7 +443,7 @@
     window.addEventListener("load", (e) => {
         configMutipleSelect();
         // 註冊 submit lisener
-        document.querySelector(`.submit.button`).addEventListener(`click`,(e)=>{submitMultiple();});
+        document.addEventListener(`submit`,(e)=>{submitMultiple(e);});
     });
 </script>
 
